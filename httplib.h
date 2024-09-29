@@ -1893,6 +1893,8 @@ public:
   SSL_CTX *ssl_context() const;
 #endif
 
+  inline ClientImpl* get_cli() const { return cli_.get(); }
+
 private:
   std::unique_ptr<ClientImpl> cli_;
 
