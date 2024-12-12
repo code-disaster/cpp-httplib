@@ -79,7 +79,7 @@ cli.set_ca_cert_path("./ca-bundle.crt");
 cli.enable_server_certificate_verification(false);
 
 // Disable host verification
-cli.enable_server_host_verification(false);
+cli.enable_server_hostname_verification(false);
 ```
 
 > [!NOTE]
@@ -557,18 +557,18 @@ enum Error {
 
 ```c++
 httplib::Headers headers = {
-  { "Accept-Encoding", "gzip, deflate" }
+  { "Hello", "World!" }
 };
 auto res = cli.Get("/hi", headers);
 ```
 or
 ```c++
-auto res = cli.Get("/hi", {{"Accept-Encoding", "gzip, deflate"}});
+auto res = cli.Get("/hi", {{"Hello", "World!"}});
 ```
 or
 ```c++
 cli.set_default_headers({
-  { "Accept-Encoding", "gzip, deflate" }
+  { "Hello", "World!" }
 });
 auto res = cli.Get("/hi");
 ```
@@ -823,6 +823,21 @@ The server can apply compression to the following MIME type contents:
 Brotli compression is available with `CPPHTTPLIB_BROTLI_SUPPORT`. Necessary libraries should be linked.
 Please see https://github.com/google/brotli for more detail.
 
+### Default `Accept-Encoding` value
+
+The default `Acdcept-Encoding` value contains all possible compression types. So, the following two examples are same.
+
+```c++
+res = cli.Get("/resource/foo");
+res = cli.Get("/resource/foo", {{"Accept-Encoding", "gzip, deflate, br"}});
+```
+
+If we don't want a response without compression, we have to set `Accept-Encoding` to an empty string. This behavior is similar to curl.
+
+```c++
+res = cli.Get("/resource/foo", {{"Accept-Encoding", ""}});
+```
+
 ### Compress request body on client
 
 ```c++
@@ -834,8 +849,9 @@ res = cli.Post("/resource/foo", "...", "text/plain");
 
 ```c++
 cli.set_decompress(false);
-res = cli.Get("/resource/foo", {{"Accept-Encoding", "gzip, deflate, br"}});
+res = cli.Get("/resource/foo");
 res->body; // Compressed data
+
 ```
 
 Use `poll` instead of `select`
