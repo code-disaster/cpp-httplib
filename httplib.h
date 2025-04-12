@@ -3140,7 +3140,7 @@ inline bool mmap::open(const char *path) {
   }
   size_ = static_cast<size_t>(size.QuadPart);
 
-#if _WIN32_WINNT >= _WIN32_WINNT_WIN8
+#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
   hMapping_ =
       ::CreateFileMappingFromApp(hFile_, NULL, PAGE_READONLY, size_, NULL);
 #else
@@ -3159,7 +3159,7 @@ inline bool mmap::open(const char *path) {
     return false;
   }
 
-#if _WIN32_WINNT >= _WIN32_WINNT_WIN8
+#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
   addr_ = ::MapViewOfFileFromApp(hMapping_, FILE_MAP_READ, 0, 0);
 #else
   addr_ = ::MapViewOfFile(hMapping_, FILE_MAP_READ, 0, 0, 0);
