@@ -1939,6 +1939,8 @@ public:
   SSL_CTX *ssl_context() const;
 #endif
 
+  inline ClientImpl* get_cli() const { return cli_.get(); }
+
 private:
   std::unique_ptr<ClientImpl> cli_;
 
@@ -2692,6 +2694,8 @@ inline bool is_field_value(const std::string &s) { return is_field_content(s); }
 } // namespace detail
 
 // ----------------------------------------------------------------------------
+#ifdef CPPHTTPLIB_IMPLEMENTATION
+#define inline
 
 /*
  * Implementation that will be part of the .cc file if split into .h + .cc.
@@ -10490,6 +10494,8 @@ inline SSL_CTX *Client::ssl_context() const {
 }
 #endif
 
+#undef inline
+#endif // CPPHTTPLIB_IMPLEMENTATION
 // ----------------------------------------------------------------------------
 
 } // namespace httplib
